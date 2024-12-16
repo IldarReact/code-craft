@@ -1,0 +1,29 @@
+{
+    "recommendations": [
+      // TypeScript и JavaScript
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      
+      // React
+      "dsznajder.es7-react-js-snippets",
+      "burkeholland.simple-react-snippets",
+      
+      // Улучшения разработки
+      "streetsidesoftware.code-spell-checker",
+      "usernamehw.errorlens",
+      "pflannery.vscode-versionlens",
+      
+      // Визуальные помощники
+      "aaron-bond.better-comments",
+      "oderwat.indent-rainbow",
+      
+      // Производительность и git
+      "eamodio.gitlens",
+      "mhutchie.git-graph",
+      
+      // Темы и иконки
+      "pkief.material-icon-theme",
+      "jolaleye.horizon-theme-vscode"
+    ]
+  }
