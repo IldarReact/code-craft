@@ -1,9 +1,9 @@
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui'
-import useExecutionStore from '../../store/executionStore'
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui';
+import { useExecutionStore } from '../../store/executionStore';
 
 const ExecutionOutput: React.FC = () => {
-  const { output } = useExecutionStore()
+  const result = useExecutionStore((state) => state.result);
 
   return (
     <Card>
@@ -12,11 +12,11 @@ const ExecutionOutput: React.FC = () => {
       </CardHeader>
       <CardContent>
         <pre className="bg-gray-100 p-4 rounded-md overflow-auto">
-          {output || 'No output yet'}
+          {result?.output || 'No output yet'}
         </pre>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ExecutionOutput
+export default ExecutionOutput;

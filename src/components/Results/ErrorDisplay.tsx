@@ -1,11 +1,11 @@
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui'
-import useExecutionStore from '../../store/executionStore'
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui';
+import { useExecutionStore } from '../../store/executionStore';
 
 const ErrorDisplay: React.FC = () => {
-  const { error } = useExecutionStore()
+  const error = useExecutionStore((state) => state.error);
 
-  if (!error) return null
+  if (!error) return null;
 
   return (
     <Card className="border-red-500">
@@ -14,11 +14,19 @@ const ErrorDisplay: React.FC = () => {
       </CardHeader>
       <CardContent>
         <pre className="bg-red-50 p-4 rounded-md text-red-800">
-          {error}
+          {error.message}
+          {error.stackTrace && (
+            <>
+              {'\n\n'}
+              <span className="text-red-600">Stack trace:</span>
+              {'\n'}
+              {error.stackTrace}
+            </>
+          )}
         </pre>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ErrorDisplay
+export default ErrorDisplay;
