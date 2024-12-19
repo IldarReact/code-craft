@@ -1,7 +1,6 @@
-// src/mocks/handlers.ts
 import { Response } from 'miragejs';
 import { AppSchema, ExecuteRequest, HandlerRequest } from './types';
-import { PythonInterpreter } from './pythonInterpreter';
+import { PythonInterpreter } from '../services/interpreter/pythonInterpreter';
 
 const executeHandler = async (_schema: AppSchema, request: HandlerRequest) => {
   let body: ExecuteRequest;

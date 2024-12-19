@@ -1,2 +1,2 @@
-export * from './editorStore';
-export * from './executionStore';
+export * from './slices/editorStore';
+export * from './slices/executionStore';

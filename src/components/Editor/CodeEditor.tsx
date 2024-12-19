@@ -1,25 +1,25 @@
 import React from 'react'
 import MonacoEditor from '@monaco-editor/react'
-import useEditorStore from '../../store/editorStore'
+import useEditorStore from '../../store/slices/editorStore'
 
 const CodeEditor: React.FC<{
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }> = ({ value, onChange }) => {
-  const { language } = useEditorStore();
+  const { language } = useEditorStore()
 
   const handleChange = (newValue: string | undefined) => {
     if (newValue !== undefined) {
-      onChange(newValue);
+      onChange(newValue)
     }
-  };
+  }
 
   const editorOptions = {
     fontSize: 14,
     minimap: { enabled: false },
     theme: 'vs-dark',
     automaticLayout: true,
-  };
+  }
 
   return (
     <div className="rounded-lg overflow-hidden border p-3 bg-[#1E1E1E]">
@@ -32,7 +32,7 @@ const CodeEditor: React.FC<{
         options={editorOptions}
       />
     </div>
-  );
-};
+  )
+}
 
 export default CodeEditor

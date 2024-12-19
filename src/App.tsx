@@ -1,60 +1,65 @@
 import { useEffect } from 'react'
 import { makeServer } from './mocks/server'
-import { CodeEditor, LanguageSelector } from './components/Editor'
-import useEditorStore from './store/editorStore'
-import './styles/index.css'
-import { Button } from './components/ui'
+import { EditorSection } from './components/Editor'
 import { ExecutionOutput } from './components/Results'
-import { useExecutionStore } from './store/executionStore';
-
-const languages = {
-  javascript: 'JavaScript',
-  python: 'Python',
-}
+import { useEditor } from './hooks/useEditor'
+import { useExecution } from './hooks/useExecution'
+import { useTaskStore } from './store/slices/taskStore'
+import { SUPPORTED_LANGUAGES } from './constants/languages'
+import { TaskList } from './components/TaskList/TaskList'
+import { AppHeader, Container } from './components/Layout'
+import './styles/index.css'
 
 let server: ReturnType<typeof makeServer> | null = null
 
-const App: React.FC = () => {
-  const { language, setLanguage, code, setCode } = useEditorStore()
-  const { executeCode, reset } = useExecutionStore();
-
+const App = () => {
+  const { code, language, onCodeChange, onLanguageChange } = useEditor()
+  const { execute, reset, isRunning } = useExecution()
+  const { currentTask } = useTaskStore()
 
   useEffect(() => {
     if (!server) {
       server = makeServer()
     }
-
     return () => {
       server?.shutdown()
       server = null
     }
   }, [])
 
-  const handleExecuteCode = async () => {
-    await executeCode({ 
-      code,
-      language 
-    });
-  };
+  useEffect(() => {
+    if (currentTask) {
+      onCodeChange(currentTask.initialCode || '')
+      onLanguageChange(currentTask.language || 'javascript')
+    }
+  }, [currentTask, onCodeChange, onLanguageChange])
+
+  const handleExecute = () => {
+    execute({ code, language })
+  }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Code Craft</h1>
+    <Container>
+      <AppHeader />
 
-      <div className="mb-4 flex space-x-4">
-        <LanguageSelector
-          value={language}
-          onChange={setLanguage}
-          languages={languages}
-        />
-        <Button color="primary" onClick={handleExecuteCode}>
-          Run
-        </Button>
-      </div>
+      <main className="space-y-6">
+        <TaskList />
 
-      <CodeEditor value={code} onChange={setCode} />
-      <ExecutionOutput onReset={reset} />
-    </div>
+        <div className="bg-gray-50 p-4 rounded-md shadow-md">
+          <EditorSection
+            code={code}
+            language={language}
+            isRunning={isRunning}
+            onCodeChange={onCodeChange}
+            onLanguageChange={onLanguageChange}
+            onExecute={handleExecute}
+            supportedLanguages={SUPPORTED_LANGUAGES}
+          />
+
+          <ExecutionOutput onReset={reset} />
+        </div>
+      </main>
+    </Container>
   )
 }
 
