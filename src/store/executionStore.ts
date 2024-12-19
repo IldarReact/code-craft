@@ -1,23 +1,23 @@
 import { create } from 'zustand'
 
+// Интерфейс для запроса к API
+interface ExecuteCodePayload {
+    code: string;
+    language: string;
+}
+
 // Интерфейс для ответа API
 interface ExecutionResponse {
     output: string;
-    executionTime: number;
-    memory: string;
+    error?: string;
 }
 
-// Типы для статуса выполнения
 export type ExecutionStatus = 'idle' | 'running' | 'success' | 'error';
 
-// Типы для результатов выполнения
 export interface ExecutionResult {
     output: string;
-    executionTime?: number;
-    memory?: string;
 }
 
-// Типы для ошибок выполнения
 export interface ExecutionError {
     message: string;
     line?: number;
@@ -25,7 +25,6 @@ export interface ExecutionError {
     stackTrace?: string | undefined;
 }
 
-// Интерфейс состояния хранилища
 interface ExecutionState {
     status: ExecutionStatus;
     result: ExecutionResult | null;
@@ -34,17 +33,15 @@ interface ExecutionState {
     setResult: (result: ExecutionResult) => void;
     setError: (error: ExecutionError) => void;
     reset: () => void;
-    executeCode: (code: string) => Promise<void>;
+    executeCode: (payload: ExecuteCodePayload) => Promise<void>;
 }
 
-// Начальное состояние
 const initialState = {
     status: 'idle' as ExecutionStatus,
     result: null,
     error: null,
 };
 
-// Создание хранилища
 export const useExecutionStore = create<ExecutionState>((set) => ({
     ...initialState,
 
@@ -64,57 +61,54 @@ export const useExecutionStore = create<ExecutionState>((set) => ({
 
     reset: () => set(initialState),
 
-    executeCode: async (code: string) => {
-        try {
-            set({ status: 'running' });
-
-            const response = await fetch('/api/execute', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code })
-            });
-
-            const data = (await response.json()) as ExecutionResponse;
-
-            if (!response.ok) {
-                throw data;
-            }
-
-            set({
-                status: 'success',
-                result: {
-                    output: data.output,
-                    executionTime: data.executionTime,
-                    memory: data.memory
-                },
-                error: null
-            });
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Произошла ошибка при выполнении кода';
-            const stackTrace = error instanceof Error ? error.stack : undefined;
-
-            set({
-                status: 'error',
-                error: {
-                    message: errorMessage,
-                    stackTrace
-                },
-                result: null
-            });
+    executeCode: async ({ code, language }: ExecuteCodePayload) => {
+        if (!code?.trim() || !language?.trim()) {
+          set({
+            status: 'error',
+            error: {
+              message: 'Код и язык программирования обязательны',
+            },
+            result: null
+          });
+          return;
         }
-    }
+      
+        try {
+          set({ status: 'running', result: null, error: null });
+      
+          const response = await fetch('/api/execute', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, language })
+          });
+      
+          const data = await response.json() as ExecutionResponse;
+      
+          if (!response.ok) {
+            throw new Error(data.error || 'Ошибка выполнения кода');
+          }
+      
+          set({
+            status: 'success',
+            result: {
+              output: data.output
+            },
+            error: null
+          });
+        } catch (error) {
+          const errorMessage = error instanceof Error 
+            ? error.message 
+            : 'Произошла ошибка при выполнении кода';
+          
+          set({
+            status: 'error',
+            error: {
+              message: errorMessage
+            },
+            result: null
+          });
+        }
+      }
 }));
-
-// Как вызывать из других мест:
-
-// const MyComponent = () => {
-//     const { status, result, error, executeCode } = useExecutionStore();
-
-//     const handleExecute = async () => {
-//         await executeCode(myCode);
-//     };
-
-//     return (
-//       // Ваш JSX код
-//     );
-// };

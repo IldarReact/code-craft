@@ -1,12 +1,24 @@
-import { createServer } from 'miragejs';
+import { createServer, Model, Server } from 'miragejs';
+import { executeHandler } from './handlers';
 
-if (import.meta.env.MODE === 'development') {
-  createServer({
+let server: Server | undefined;
+
+export function makeServer() {
+  if (server) {
+    server.shutdown();
+  }
+
+  server = createServer({
+    models: {
+      execution: Model.extend({}),
+    },
+
     routes() {
       this.namespace = 'api';
-      this.get('/code-execution', () => {
-        return { status: 'success', message: 'Code executed successfully!' };
-      });
-    },
+
+      this.post('/execute', executeHandler);
+    }
   });
+
+  return server;
 }
