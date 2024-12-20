@@ -8,7 +8,7 @@ import { useTaskStore } from './store/slices/taskStore'
 import { SUPPORTED_LANGUAGES } from './constants/languages'
 import { TaskList } from './components/TaskList/TaskList'
 import { AppHeader, Container } from './components/Layout'
-import './styles/index.css'
+import './index.css'
 
 let server: ReturnType<typeof makeServer> | null = null
 

@@ -52,7 +52,7 @@ const ExecutionOutput: React.FC<ExecutionOutputProps> = ({ onReset }) => {
       </div>
       <div className="text-sm text-gray-500 mt-3">
         Используйте{' '}
-        <kbd className="px-2 py-0.5 text-xs rounded bg-gray-100">⌘ + Enter</kbd>{' '}
+        <kbd className="px-2 py-0.5 text-xs rounded bg-gray-100">⌘/Ctrl + Enter</kbd>{' '}
         для быстрого выполнения кода
       </div>
     </>

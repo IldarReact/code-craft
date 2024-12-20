@@ -13,7 +13,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   onChange,
   languages,
 }) => {
-  console.log("Render LanguageSelector:", { value, languages });
 
   const hasLanguages = languages && Object.keys(languages).length > 0;
   const languageOptions = hasLanguages
@@ -22,7 +21,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   // Проверка значения value
   const isValidValue = Object.keys(languages).includes(value);
-  console.log("Is value valid:", isValidValue);
 
   if (!isValidValue) {
     console.error(`Invalid value: "${value}" is not in languages.`);

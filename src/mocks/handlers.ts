@@ -22,7 +22,6 @@ const executeHandler = async (_schema: AppSchema, request: HandlerRequest) => {
   }
 
   try {
-    // JavaScript execution остаётся без изменений
     if (language === 'javascript') {
       const logs: string[] = [];
       const originalConsoleLog = console.log;
@@ -45,7 +44,6 @@ const executeHandler = async (_schema: AppSchema, request: HandlerRequest) => {
       };
     }
 
-    // Новая реализация для Python
     if (language === 'python') {
       const interpreter = new PythonInterpreter();
       const result = interpreter.execute(code);
